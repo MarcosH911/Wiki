@@ -5,11 +5,17 @@
 {% endblock %}
 
 {% block body %}
-    <h1>All Pages</h1>
+    {% if searching %}
+        <h1>Entries with with "{{ value }}"</h1>
+    {% else %}
+        <h1>All Pages</h1>
+    {% endif %}
 
     <ul>
         {% for entry in entries %}
-            <li>{{ entry }}</li>
+            <li>
+                <a href="wiki/{{ entry }}">{{ entry }}</a>
+            </li>
         {% endfor %}
     </ul>
 
