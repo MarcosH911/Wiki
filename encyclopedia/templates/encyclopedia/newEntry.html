@@ -1,0 +1,17 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    New Entry
+{% endblock %}
+
+{% block body %}
+    {% if not existing %}
+        <h1>New Entry</h1>
+        <form action="{% url 'newEntry' %}" method="POST">
+            {{ form }}
+            <input type="submit" class="btn btn-primary" value="Create">
+        </form>
+    {% else %}
+
+    {% endif %}
+{% endblock %}
