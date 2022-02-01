@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <div>
-        {{ entry|safe }}
-    </div>
+    {{ entry|safe }}
+    <br>
+    <a class="btn btn-secondary btn-lg" style="color: white;" href="/wiki/{{ title }}/edit">Edit</a>
 {% endblock %}

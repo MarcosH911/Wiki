@@ -1,9 +1,9 @@
-from django.shortcuts import render
 from . import util
-from markdown import markdown
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django import forms
+from markdown2 import Markdown
 
 
 class NewEntryForm(forms.Form):
@@ -20,13 +20,14 @@ def index(request):
 
 
 def entry(request, title):
+    markdown = Markdown()
     entry = util.get_entry(title)
     if entry is None:
         return render(request, "encyclopedia/entryNotFound.html", {
             "title": title
     })
     else:
-        entry = markdown(entry)
+        entry = markdown.convert(entry)
         print(entry)
         return render(request, "encyclopedia/entry.html", {
             "title": title.capitalize(), "entry": entry
@@ -35,7 +36,19 @@ def entry(request, title):
 
 def newEntry(request):
     if request.method == "POST":
-        pass
+        form = NewEntryForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            if not util.get_entry(title) or form.cleaned_data["edit"]:
+                util.save_entry(title, content)
+                return HttpResponseRedirect(reverse("entry", kwargs={"title": title}))
+            else:
+                return render(request, "encyclopedia/newEntry.html", {
+                    "form": form,
+                    "existing": True,
+                    "title": title
+                })
 
     else:
         return render(request, "encyclopedia/newEntry.html", {
@@ -43,6 +56,22 @@ def newEntry(request):
             "existing": False
         })
 
+
+def editEntry(request, title):
+    entry = util.get_entry(title)
+    if not entry:
+        return render(request, "encyclopedia/newEntry.html", {"title": title})
+    else:
+        form = NewEntryForm()
+        form.fields["title"].initial = title
+        form.fields["title"].widget = forms.HiddenInput()
+        form.fields["content"].initial = entry
+        form.fields["edit"].initial = True
+        return render(request, "encyclopedia/newEntry.html", {
+            "title": title,
+            "form": form,
+            "edit": True
+        })
 
 def search(request):
     search = request.GET.get("q","")

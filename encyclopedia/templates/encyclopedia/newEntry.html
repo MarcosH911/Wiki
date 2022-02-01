@@ -1,17 +1,31 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    New Entry
+    {% if edit %}
+        Editing {{ title }}
+    {% else %}
+        New Entry
+    {% endif %}
 {% endblock %}
 
 {% block body %}
-    {% if not existing %}
-        <h1>New Entry</h1>
-        <form action="{% url 'newEntry' %}" method="POST">
-            {{ form }}
-            <input type="submit" class="btn btn-primary" value="Create">
+    {% if existing %}
+        <h1>Sorry, an entry with this title already exists</h1>
+        <h3>If you want to view or edit click the button below</h3>
+        <form action="/wiki/{{ title }}">
+            <a type="submit" class="btn btn-primary btn-lg" href="/wiki/{{ title }}" >{{ title }}</a>
         </form>
     {% else %}
-
+        {% if edit %}
+            <h1>{{ title }}</h1>
+        {% else %}
+            <h1>New Entry</h1>
+        {% endif %}
+            <br>
+            <form action="{% url 'newEntry' %}" method="POST">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" class="btn btn-primary" value="Create">
+            </form>
     {% endif %}
 {% endblock %}
