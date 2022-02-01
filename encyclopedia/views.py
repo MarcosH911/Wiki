@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django import forms
 from markdown2 import Markdown
+from random import randint
 
 
 class NewEntryForm(forms.Form):
@@ -73,7 +74,7 @@ def editEntry(request, title):
             "edit": True
         })
 
-def search(request):
+def searchEntry(request):
     search = request.GET.get("q","")
     entry = util.get_entry(search)
     if entry is None:
@@ -88,3 +89,9 @@ def search(request):
         })
     else:
         return HttpResponseRedirect(reverse("entry", kwargs={"title": search }))
+
+
+def randomEntry(request):
+    entries = util.list_entries()
+    n = randint(0, len(entries) - 1)
+    return HttpResponseRedirect(reverse("entry", kwargs={"title": entries[n]}))

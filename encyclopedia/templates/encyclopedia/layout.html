@@ -12,7 +12,7 @@
         <div class="row">
             <div class="sidebar col-lg-2 col-md-3">
                 <h2>Wiki</h2>
-                <form action="{% url 'search' %}" method="GET">
+                <form action="{% url 'searchEntry' %}" method="GET">
                     <input class="search" type="text" name="q" placeholder="Search Encyclopedia" autocomplete="off">
                 </form>
                 <div>
@@ -22,7 +22,7 @@
                     <a href="{% url 'newEntry' %}">Create New Entry</a>
                 </div>
                 <div>
-                    Random Page
+                    <a href="{% url 'randomEntry' %}">Random Entry</a>
                 </div>
                 {% block nav %}
                 {% endblock %}
